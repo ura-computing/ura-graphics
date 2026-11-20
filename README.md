@@ -92,20 +92,10 @@ It adds this line to your project's `ura.conf`. The C library itself comes from 
           └──────────── for y, for x: compute each pixel, every frame
 ```
 
-```mermaid
-flowchart LR
-    A["your code<br/>use &quot;@/sdl2&quot;"]:::code --> S["sdl2.ura<br/>link &quot;SDL2&quot;"]:::lib
-    A2["use &quot;@/raylib&quot;"]:::code --> R["raylib.ura<br/>link &quot;raylib&quot;"]:::lib
-    A3["use &quot;@/opengl&quot;"]:::code --> G["opengl.ura<br/>@if: GL / OpenGL / opengl32"]:::lib
-    S --> L["ura compiler<br/>finds the .so / .dylib"]:::step
-    R --> L
-    G --> L
-    L --> N["native libraries<br/>libSDL2, libraylib, libGL"]:::native
-    classDef code fill:#4a5568,stroke:#2F74E8,color:#fff
-    classDef lib fill:#2F74E8,stroke:#2d3748,color:#fff
-    classDef step fill:#f4f8fb,stroke:#2F74E8,color:#1a202c
-    classDef native fill:#2d3748,stroke:#2F74E8,color:#fff
-```
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/pipeline-dark.svg">
+  <img src="assets/pipeline-light.svg" alt="sdl2.ura, raylib.ura and opengl.ura go through ura build, which links libSDL2, libraylib and libGL">
+</picture>
 
 ## API quick reference
 
@@ -155,17 +145,10 @@ The library to link is picked per system with `@if`: `GL` on Linux, `OpenGL` on 
 
 ## The ura standard library
 
-```mermaid
-flowchart TD
-    P["your project<br/>ura.conf"]:::you --> C["ura-core<br/>Array, String, Range"]:::lib
-    P --> X["ura-posix<br/>files, sockets, time"]:::lib
-    P --> M["ura-math<br/>libm"]:::lib
-    P --> G["ura-graphics<br/>SDL2, raylib, OpenGL"]:::here
-    X --> M
-    classDef you fill:#4a5568,stroke:#2F74E8,color:#fff
-    classDef here fill:#2F74E8,stroke:#2d3748,color:#fff
-    classDef lib fill:#f4f8fb,stroke:#2F74E8,color:#1a202c
-```
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/ecosystem-dark.svg">
+  <img src="assets/ecosystem-light.svg" alt="A project depends on ura-core, ura-posix, ura-math and ura-graphics; ura-posix uses ura-math">
+</picture>
 
 | Repo | Version | What | Depends on |
 |---|---|---|---|
