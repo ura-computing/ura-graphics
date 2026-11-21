@@ -1,5 +1,5 @@
 // OpenGL 1.x fixed pipeline plus textures: enough to draw shapes and blit
-// pixel buffers. Needs a context first, e.g. SDL_GL_CreateContext from "@/sdl2".
+// pixel buffers. Needs a context first, e.g. SDL_GL_CreateContext from "@/graphics".
 @if os == "windows":
     link "opengl32"
 @elif os == "macos":

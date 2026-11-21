@@ -24,7 +24,7 @@
 A 320x200 plasma that animates for three seconds, written straight into a pixel buffer:
 
 ```ura
-use "@/sdl2"
+use "@/graphics"
 
 W i32 = 320
 H i32 = 200
@@ -101,9 +101,9 @@ It adds this line to your project's `ura.conf`. The C library itself comes from 
 
 | Module | Import | Key types and functions | Notes |
 |---|---|---|---|
-| sdl2 | `use "@/sdl2"` | `SDL_CreateWindow` `SDL_CreateRenderer` `SDL_CreateTexture` `SDL_UpdateTexture` `SDL_PollEvent`, `SDL_Event` | windows, pixels, keyboard, mouse, timers |
-| raylib | `use "@/raylib"` | `InitWindow` `BeginDrawing` `DrawRectangle` `DrawText` `IsKeyPressed` | the quickest way to a small game |
-| opengl | `use "@/opengl"` | `glClear` `glBegin` `glVertex` `glColor` `glOrtho` `glBindTexture` | classic OpenGL 1.x, with an SDL2 OpenGL context |
+| sdl2 | `use "@/graphics"` | `SDL_CreateWindow` `SDL_CreateRenderer` `SDL_CreateTexture` `SDL_UpdateTexture` `SDL_PollEvent`, `SDL_Event` | windows, pixels, keyboard, mouse, timers |
+| raylib | `use "@/graphics/raylib"` | `InitWindow` `BeginDrawing` `DrawRectangle` `DrawText` `IsKeyPressed` | the quickest way to a small game |
+| opengl | `use "@/graphics/opengl"` | `glClear` `glBegin` `glVertex` `glColor` `glOrtho` `glBindTexture` | classic OpenGL 1.x, with an SDL2 OpenGL context |
 
 <details>
 <summary><b>sdl2</b>: every binding</summary>

@@ -132,7 +132,7 @@ proto SDL_Delay(ms u32)
 proto SDL_GetTicks() u32
 proto SDL_GetTicks64() u64
 
-// ── OpenGL contexts, use with "@/opengl" ──
+// ── OpenGL contexts, use with "@/graphics/opengl" ──
 SDL_GL_DOUBLEBUFFER i32 = 5
 SDL_GL_DEPTH_SIZE i32 = 6
 SDL_GL_CONTEXT_MAJOR_VERSION i32 = 17
