@@ -5,12 +5,12 @@
 <h1 align="center">ura-graphics</h1>
 
 <p align="center">
-  Windows, pixels and games for <a href="https://github.com/mohammedhrima/ura-lang">ura</a>: SDL2, raylib and OpenGL bindings.<br>
+  Windows, pixels and games for <a href="https://github.com/ura-computing/ura-lang">ura</a>: SDL2, raylib and OpenGL bindings.<br>
   Open a window, fill a pixel buffer, draw shapes and text, all from ura.
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-0.1.0-2F74E8" alt="version 0.1.0">
+  <img src="https://img.shields.io/badge/version-0.0.1-2F74E8" alt="version 0.0.1">
   <img src="https://img.shields.io/badge/ura-standard%20library-2F74E8" alt="ura standard library">
   <img src="https://img.shields.io/badge/SDL2-supported-2F74E8" alt="SDL2">
   <img src="https://img.shields.io/badge/raylib-supported-2F74E8" alt="raylib">
@@ -70,13 +70,13 @@ fn main() i32:
 ## Install
 
 ```
-ura install ura-graphics 0.1.0 https://github.com/mohammedhrima/ura-graphics
+ura install ura-graphics 0.0.1 https://github.com/ura-computing/ura-graphics
 ```
 
 It adds this line to your project's `ura.conf`. The C library itself comes from your system (`apt install libsdl2-dev`, `brew install sdl2 raylib`).
 
 ```ura
-@dependency "ura-graphics" "0.1.0" "https://github.com/mohammedhrima/ura-graphics"
+@dependency "ura-graphics" "0.0.1" "https://github.com/ura-computing/ura-graphics"
 ```
 
 ## Frame pipeline
@@ -152,13 +152,13 @@ The library to link is picked per system with `@if`: `GL` on Linux, `OpenGL` on 
 
 | Repo | Version | What | Depends on |
 |---|---|---|---|
-| [ura-core](https://github.com/mohammedhrima/ura-core) | 0.1.0 | Array, String, Range, Error, Os | nothing |
-| [ura-posix](https://github.com/mohammedhrima/ura-posix) | 0.1.0 | the C library and the OS | ura-math |
-| [ura-math](https://github.com/mohammedhrima/ura-math) | 0.1.0 | C's math library | nothing |
-| **ura-graphics** | 0.1.0 | SDL2, raylib, OpenGL | nothing |
+| [ura-core](https://github.com/ura-computing/ura-core) | 0.0.1 | Array, String, Range, Error, Os | nothing |
+| [ura-posix](https://github.com/ura-computing/ura-posix) | 0.0.1 | the C library and the OS | ura-math |
+| [ura-math](https://github.com/ura-computing/ura-math) | 0.0.1 | C's math library | nothing |
+| **ura-graphics** | 0.0.1 | SDL2, raylib, OpenGL | nothing |
 
 ---
 
 <p align="center">
-  Part of <a href="https://github.com/mohammedhrima/ura-lang">ura-lang</a>
+  Part of <a href="https://github.com/ura-computing/ura-lang">ura-lang</a>
 </p>
