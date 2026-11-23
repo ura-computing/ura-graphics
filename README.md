@@ -70,13 +70,15 @@ fn main() i32:
 ## Install
 
 ```
-ura install ura-graphics 0.0.1 https://github.com/ura-computing/ura-graphics
+ura deps add graphics@0.0.1
 ```
 
-It adds this line to your project's `ura.conf`. The C library itself comes from your system (`apt install libsdl2-dev`, `brew install sdl2 raylib`).
+It adds this block to your project's `ura.conf`. The C library itself comes from your system (`apt install libsdl2-dev`, `brew install sdl2 raylib`).
 
 ```ura
-@dependency "ura-graphics" "0.0.1" "https://github.com/ura-computing/ura-graphics"
+@dep "graphics":
+    @url "https://github.com/ura-computing/ura-graphics"
+    @version "0.0.1"
 ```
 
 ## Frame pipeline
