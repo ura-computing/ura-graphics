@@ -1,0 +1,61 @@
+pub fn create(title String, width i32, height i32) Window:
+    if SDL2::SDL_Init(SDL2::SDL_INIT_VIDEO) != 0:
+        throw sdl_error("SDL_Init")
+    handle i8[] = SDL2::SDL_CreateWindow(
+        title.chars(),
+        SDL2::SDL_WINDOWPOS_CENTERED,
+        SDL2::SDL_WINDOWPOS_CENTERED,
+        width,
+        height,
+        SDL2::SDL_WINDOW_SHOWN
+    )
+    if handle == null:
+        throw sdl_error("SDL_CreateWindow")
+    renderer i8[] = SDL2::SDL_CreateRenderer(handle, -1, SDL2::SDL_RENDERER_ACCELERATED)
+    if renderer == null:
+        throw sdl_error("SDL_CreateRenderer")
+    texture i8[] = SDL2::SDL_CreateTexture(
+        renderer,
+        SDL2::SDL_PIXELFORMAT_ABGR8888,
+        SDL2::SDL_TEXTUREACCESS_STREAMING,
+        width,
+        height
+    )
+    if texture == null:
+        throw sdl_error("SDL_CreateTexture")
+    return {
+        handle: handle,
+        renderer: renderer,
+        texture: texture,
+        width: width,
+        height: height,
+        open: True
+    }
+
+fn is_open() bool:
+    return self.open
+
+fn close():
+    self.open = False
+
+fn poll(event &Event) bool:
+    if not sdl_poll(&event):
+        return False
+    if event.kind == EventKind::QUIT:
+        self.open = False
+    return True
+
+fn draw(pixels &Array<Color>):
+    if pixels.len() != self.width * self.height:
+        throw Error::create($"draw: {pixels.len()} pixels for a {self.width}x{self.height} window")
+    pitch i32 = self.width * sizeof(Color)
+    if SDL2::SDL_UpdateTexture(self.texture, null, pixels.data as i8[], pitch) != 0:
+        throw sdl_error("SDL_UpdateTexture")
+    if SDL2::SDL_RenderCopy(self.renderer, self.texture, null, null) != 0:
+        throw sdl_error("SDL_RenderCopy")
+
+fn present():
+    SDL2::SDL_RenderPresent(self.renderer)
+
+fn set_title(title String):
+    SDL2::SDL_SetWindowTitle(self.handle, title.chars())

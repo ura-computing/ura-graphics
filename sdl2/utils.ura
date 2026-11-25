@@ -1,0 +1,38 @@
+fn sdl_error(call String) Error:
+    reason String = String::create(SDL2::SDL_GetError())
+    return Error::create($"{call}: {reason}")
+
+fn sdl_key(sym i32) Key:
+    match sym:
+        case SDL2::SDLK_ESCAPE:   return Key::ESCAPE
+        case SDL2::SDLK_SPACE:    return Key::SPACE
+        case SDL2::SDLK_UP:       return Key::UP
+        case SDL2::SDLK_DOWN:     return Key::DOWN
+        case SDL2::SDLK_LEFT:     return Key::LEFT
+        case SDL2::SDLK_RIGHT:    return Key::RIGHT
+        case SDL2::SDLK_PAGEUP:   return Key::PAGE_UP
+        case SDL2::SDLK_PAGEDOWN: return Key::PAGE_DOWN
+        case SDL2::SDLK_a:        return Key::A
+        case SDL2::SDLK_d:        return Key::D
+        case SDL2::SDLK_p:        return Key::P
+        case SDL2::SDLK_r:        return Key::R
+        case SDL2::SDLK_s:        return Key::S
+        case SDL2::SDLK_w:        return Key::W
+    return Key::UNKNOWN
+
+fn sdl_poll(event &Event) bool:
+    raw SDL2::SDL_Event
+    if SDL2::SDL_PollEvent(&raw) == 0:
+        return False
+    kind EventKind = EventKind::NONE
+    if raw.type == SDL2::SDL_QUIT:
+        kind = EventKind::QUIT
+    elif raw.type == SDL2::SDL_KEYDOWN:
+        kind = EventKind::KEY_DOWN
+    elif raw.type == SDL2::SDL_KEYUP:
+        kind = EventKind::KEY_UP
+    event = {
+        kind: kind,
+        key: sdl_key(raw.sym)
+    }
+    return True

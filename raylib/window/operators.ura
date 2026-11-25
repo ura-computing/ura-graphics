@@ -1,0 +1,5 @@
+operator drop(window &Window):
+    if window.texture != 0:
+        Raylib::rlUnloadTexture(window.texture)
+    if window.width > 0:
+        Raylib::CloseWindow()

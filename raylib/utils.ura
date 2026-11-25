@@ -1,0 +1,17 @@
+fn raylib_key(code i32) Key:
+    match code:
+        case Raylib::KEY_ESCAPE:    return Key::ESCAPE
+        case Raylib::KEY_SPACE:     return Key::SPACE
+        case Raylib::KEY_UP:        return Key::UP
+        case Raylib::KEY_DOWN:      return Key::DOWN
+        case Raylib::KEY_LEFT:      return Key::LEFT
+        case Raylib::KEY_RIGHT:     return Key::RIGHT
+        case Raylib::KEY_PAGE_UP:   return Key::PAGE_UP
+        case Raylib::KEY_PAGE_DOWN: return Key::PAGE_DOWN
+        case Raylib::KEY_A:         return Key::A
+        case Raylib::KEY_D:         return Key::D
+        case Raylib::KEY_P:         return Key::P
+        case Raylib::KEY_R:         return Key::R
+        case Raylib::KEY_S:         return Key::S
+        case Raylib::KEY_W:         return Key::W
+    return Key::UNKNOWN

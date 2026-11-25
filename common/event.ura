@@ -1,0 +1,7 @@
+enum EventKind: NONE, QUIT, KEY_DOWN, KEY_UP
+
+enum Key: UNKNOWN, ESCAPE, SPACE, UP, DOWN, LEFT, RIGHT, PAGE_UP, PAGE_DOWN, A, D, P, R, S, W
+
+struct Event:
+    kind EventKind
+    key Key

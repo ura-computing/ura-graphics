@@ -1,0 +1,10 @@
+struct Window:
+    texture u32
+    width i32
+    height i32
+    open bool
+    drawing bool
+
+    use "./window/methods"
+
+use "./window/operators"

@@ -1,0 +1,11 @@
+struct Window:
+    handle i8[]
+    context i8[]
+    texture u32
+    width i32
+    height i32
+    open bool
+
+    use "./window/methods"
+
+use "./window/operators"

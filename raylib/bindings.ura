@@ -1,0 +1,61 @@
+@if installed("raylib"):
+    link "raylib"
+@elif os == "macos":
+    @error "raylib is not installed" "brew install raylib"
+@elif os == "windows":
+    @error "raylib is not installed" "download raylib from https://raylib.com"
+@else:
+    @error "raylib is not installed" "sudo apt install libraylib-dev"
+
+mod Raylib:
+    // a Color argument is its packed() u32: C passes the 4-byte struct that way
+    proto InitWindow(width i32, height i32, title i8[])
+    proto CloseWindow()
+    proto IsWindowReady() bool
+    proto WindowShouldClose() bool
+    proto SetWindowTitle(title i8[])
+    proto SetExitKey(key i32)
+    proto SetTargetFPS(fps i32)
+    proto GetFrameTime() f32
+    proto BeginDrawing()
+    proto EndDrawing()
+    proto ClearBackground(color u32)
+    proto DrawRectangle(x i32, y i32, w i32, h i32, color u32)
+    proto DrawRectangleLines(x i32, y i32, w i32, h i32, color u32)
+    proto DrawLine(x1 i32, y1 i32, x2 i32, y2 i32, color u32)
+    proto DrawText(text i8[], x i32, y i32, size i32, color u32)
+    proto MeasureText(text i8[], size i32) i32
+    proto IsKeyPressed(key i32) bool
+    proto GetKeyPressed() i32
+    proto TextFormat(fmt i8[], ...) i8[]
+    proto SetRandomSeed(seed u32)
+    proto GetRandomValue(min i32, max i32) i32
+
+    RL_QUADS i32 = 7
+    PIXELFORMAT_UNCOMPRESSED_R8G8B8A8 i32 = 7
+
+    proto rlLoadTexture(data i8[], width i32, height i32, format i32, mipmaps i32) u32
+    proto rlUpdateTexture(id u32, x i32, y i32, width i32, height i32, format i32, data i8[])
+    proto rlUnloadTexture(id u32)
+    proto rlSetTexture(id u32)
+    proto rlBegin(mode i32)
+    proto rlEnd()
+    proto rlColor4ub(r u8, g u8, b u8, a u8)
+    proto rlTexCoord2f(x f32, y f32)
+    proto rlVertex2f(x f32, y f32)
+
+    KEY_NULL i32 = 0
+    KEY_SPACE i32 = 32
+    KEY_A i32 = 65
+    KEY_D i32 = 68
+    KEY_P i32 = 80
+    KEY_R i32 = 82
+    KEY_S i32 = 83
+    KEY_W i32 = 87
+    KEY_ESCAPE i32 = 256
+    KEY_RIGHT i32 = 262
+    KEY_LEFT i32 = 263
+    KEY_DOWN i32 = 264
+    KEY_UP i32 = 265
+    KEY_PAGE_UP i32 = 266
+    KEY_PAGE_DOWN i32 = 267

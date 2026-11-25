@@ -1,0 +1,86 @@
+pub fn create(title String, width i32, height i32) Window:
+    Raylib::InitWindow(width, height, title.chars())
+    if not Raylib::IsWindowReady():
+        throw Error::create("InitWindow: raylib can't open the window")
+    Raylib::SetExitKey(Raylib::KEY_NULL)
+    texture u32 = Raylib::rlLoadTexture(
+        null,
+        width,
+        height,
+        Raylib::PIXELFORMAT_UNCOMPRESSED_R8G8B8A8,
+        1
+    )
+    if texture == 0:
+        throw Error::create("rlLoadTexture: raylib can't create the texture")
+    return {
+        texture: texture,
+        width: width,
+        height: height,
+        open: True,
+        drawing: False
+    }
+
+fn is_open() bool:
+    return self.open
+
+fn close():
+    self.open = False
+
+fn poll(event &Event) bool:
+    if self.open and Raylib::WindowShouldClose():
+        self.open = False
+        event = {
+            kind: EventKind::QUIT,
+            key: Key::UNKNOWN
+        }
+        return True
+    code i32 = Raylib::GetKeyPressed()
+    if code == Raylib::KEY_NULL:
+        return False
+    event = {
+        kind: EventKind::KEY_DOWN,
+        key: raylib_key(code)
+    }
+    return True
+
+fn begin():
+    if not self.drawing:
+        Raylib::BeginDrawing()
+        self.drawing = True
+
+fn draw(pixels &Array<Color>):
+    if pixels.len() != self.width * self.height:
+        throw Error::create($"draw: {pixels.len()} pixels for a {self.width}x{self.height} window")
+    right f32 = self.width as f32
+    bottom f32 = self.height as f32
+    self.begin()
+    Raylib::rlUpdateTexture(
+        self.texture,
+        0,
+        0,
+        self.width,
+        self.height,
+        Raylib::PIXELFORMAT_UNCOMPRESSED_R8G8B8A8,
+        pixels.data as i8[]
+    )
+    Raylib::rlSetTexture(self.texture)
+    Raylib::rlBegin(Raylib::RL_QUADS)
+    Raylib::rlColor4ub(255, 255, 255, 255)
+    Raylib::rlTexCoord2f(0.0f, 0.0f)
+    Raylib::rlVertex2f(0.0f, 0.0f)
+    Raylib::rlTexCoord2f(0.0f, 1.0f)
+    Raylib::rlVertex2f(0.0f, bottom)
+    Raylib::rlTexCoord2f(1.0f, 1.0f)
+    Raylib::rlVertex2f(right, bottom)
+    Raylib::rlTexCoord2f(1.0f, 0.0f)
+    Raylib::rlVertex2f(right, 0.0f)
+    Raylib::rlEnd()
+    Raylib::rlSetTexture(0)
+
+fn present():
+    self.begin()
+    Raylib::EndDrawing()
+    self.drawing = False
+
+fn set_title(title String):
+    Raylib::SetWindowTitle(title.chars())

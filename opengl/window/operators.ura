@@ -1,0 +1,8 @@
+operator drop(window &Window):
+    if window.texture != 0:
+        OpenGL::glDeleteTextures(1, &window.texture)
+    if window.context != null:
+        SDL2::SDL_GL_DeleteContext(window.context)
+    if window.handle != null:
+        SDL2::SDL_DestroyWindow(window.handle)
+        SDL2::SDL_Quit()

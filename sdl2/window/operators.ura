@@ -1,0 +1,8 @@
+operator drop(window &Window):
+    if window.texture != null:
+        SDL2::SDL_DestroyTexture(window.texture)
+    if window.renderer != null:
+        SDL2::SDL_DestroyRenderer(window.renderer)
+    if window.handle != null:
+        SDL2::SDL_DestroyWindow(window.handle)
+        SDL2::SDL_Quit()

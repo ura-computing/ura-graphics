@@ -21,51 +21,45 @@
 
 ## At a glance
 
-A 320x200 plasma that animates for three seconds, written straight into a pixel buffer:
+A 320x200 plasma, written straight into a pixel buffer:
 
 ```ura
-use "@/graphics"
+use "@/core"
+use "@/graphics/sdl2"
 
 W i32 = 320
 H i32 = 200
 
 fn main() i32:
-    SDL_Init(SDL_INIT_VIDEO)
-    window i8[] = SDL_CreateWindow("ura plasma", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, W * 2, H * 2, SDL_WINDOW_SHOWN)
-    renderer i8[] = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED)
-    texture i8[] = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, W, H)
-    pixels Array<u32>
+    window Window = Window::create("ura plasma", W, H)
+    pixels Array<Color>
     pixels.resize(W * H)
-    event SDL_Event
-    none i8[]
+    event Event
     frames i32 = 0
 
-    while SDL_GetTicks() < 3000:
-        while SDL_PollEvent(&event) != 0:
-            frames += 0
-        t i32 = (SDL_GetTicks() / 10) as i32
+    while window.is_open() and frames < 180:
+        while window.poll(&event):
+            if event.kind == EventKind::KEY_DOWN and event.key == Key::ESCAPE:
+                window.close()
         for y in Range::create(0, H):
             for x in Range::create(0, W):
-                red u32 = ((x + t) % 256) as u32
-                green u32 = ((y + t / 2) % 256) as u32
-                blue u32 = ((x + y + t) % 256) as u32
-                pixels[y * W + x] = red * 16777216 + green * 65536 + blue * 256 + 255
-        SDL_UpdateTexture(texture, none, pixels.data as i8[], W * 4)
-        SDL_RenderCopy(renderer, texture, none, none)
-        SDL_RenderPresent(renderer)
+                pixels[y * W + x] = Color::create(
+                    ((x + frames) % 256) as u8,
+                    ((y + frames / 2) % 256) as u8,
+                    ((x + y + frames) % 256) as u8,
+                    255
+                )
+        window.draw(pixels)
+        window.present()
         frames += 1
 
-    output("drew ", frames, " frames of ", W, "x", H, " pixels\n")
-    SDL_DestroyTexture(texture)
-    SDL_DestroyRenderer(renderer)
-    SDL_DestroyWindow(window)
-    SDL_Quit()
+    io::out($"drew {frames} frames of {W}x{H} pixels\n")
     return 0
 ```
 
-- `pixels Array<u32>` is a ura array; `pixels.data` hands its memory to SDL with no copy.
-- One `u32` per pixel, `RGBA8888`: red in the top byte, alpha in the low byte.
-- The window is freed by SDL's own destroy calls; the pixel array is freed by ura at the end of `main`.
+- Change one line to change the backend: `use "@/graphics/opengl"` or `use "@/graphics/raylib"`. The rest stays the same.
+- `Color` is 4 bytes, `r g b a` in memory: every backend takes `pixels.data` with no copy and no repacking.
+- `Window::create` throws an `Error` with the backend's own message when it can't open; the window is freed when it goes out of scope.
 
 ## Install
 
@@ -86,7 +80,7 @@ It adds this block to your project's `ura.conf`. The C library itself comes from
 ```
  ura                                   SDL2                          screen
 ┌────────────────────────┐   .data   ┌──────────────────────┐      ┌────────┐
-│ pixels Array<u32>      │ ────────► │ SDL_UpdateTexture    │      │        │
+│ pixels Array<Color>    │ ────────► │ SDL_UpdateTexture    │      │        │
 │ [RGBA][RGBA][RGBA] ... │  no copy  │ texture (GPU)        │ ───► │ window │
 │ W * H elements         │           │ SDL_RenderCopy       │      │        │
 └────────────────────────┘           │ SDL_RenderPresent    │      └────────┘
@@ -101,14 +95,22 @@ It adds this block to your project's `ura.conf`. The C library itself comes from
 
 ## API quick reference
 
-| Module | Import | Key types and functions | Notes |
+Every backend gives the same types:
+
+| Type | API |
+|---|---|
+| `Window` | `Window::create(title, width, height)` `is_open()` `close()` `poll(&event) bool` `draw(pixels Array<Color>)` `present()` `set_title(title)` |
+| `Color` | `Color::create(r, g, b, a)` (`u8` each), `packed() u32` |
+| `Event` | `kind EventKind` (`NONE` `QUIT` `KEY_DOWN` `KEY_UP`), `key Key` (`ESCAPE` `SPACE` `UP` `DOWN` `LEFT` `RIGHT` `PAGE_UP` `PAGE_DOWN` `A` `D` `P` `R` `S` `W`) |
+
+| Backend | Import | Raw C bindings | Notes |
 |---|---|---|---|
-| sdl2 | `use "@/graphics"` | `SDL_CreateWindow` `SDL_CreateRenderer` `SDL_CreateTexture` `SDL_UpdateTexture` `SDL_PollEvent`, `SDL_Event` | windows, pixels, keyboard, mouse, timers |
-| raylib | `use "@/graphics/raylib"` | `InitWindow` `BeginDrawing` `DrawRectangle` `DrawText` `IsKeyPressed` | the quickest way to a small game |
-| opengl | `use "@/graphics/opengl"` | `glClear` `glBegin` `glVertex` `glColor` `glOrtho` `glBindTexture` | classic OpenGL 1.x, with an SDL2 OpenGL context |
+| sdl2 | `use "@/graphics/sdl2"` | `SDL2::SDL_CreateWindow` `SDL2::SDL_PollEvent` ... | windows, pixels, keyboard, mouse, timers |
+| opengl | `use "@/graphics/opengl"` | `OpenGL::glClear` `OpenGL::glBegin` ... | classic OpenGL 1.x in an SDL2 window |
+| raylib | `use "@/graphics/raylib"` | `Raylib::InitWindow` `Raylib::DrawText` ... | a `Color` argument is passed as `color.packed()` |
 
 <details>
-<summary><b>sdl2</b>: every binding</summary>
+<summary><b>sdl2</b>: every binding, in <code>mod SDL2</code></summary>
 
 | Area | Functions | Constants |
 |---|---|---|
@@ -124,14 +126,16 @@ It adds this block to your project's `ura.conf`. The C library itself comes from
 </details>
 
 <details>
-<summary><b>raylib</b>: every binding</summary>
+<summary><b>raylib</b>: every binding, in <code>mod Raylib</code></summary>
 
-`InitWindow` `CloseWindow` `WindowShouldClose` `SetTargetFPS` `GetFrameTime` `BeginDrawing` `EndDrawing` `ClearBackground` `DrawRectangle` `DrawRectangleLines` `DrawLine` `DrawText` `MeasureText` `IsKeyPressed` `ColorBrightness` `TextFormat` `SetRandomSeed` `GetRandomValue`, and the keys `KEY_LEFT` `KEY_RIGHT` `KEY_UP` `KEY_DOWN` `KEY_SPACE` `KEY_P` `KEY_R`
+`InitWindow` `CloseWindow` `IsWindowReady` `WindowShouldClose` `SetWindowTitle` `SetExitKey` `SetTargetFPS` `GetFrameTime` `BeginDrawing` `EndDrawing` `ClearBackground` `DrawRectangle` `DrawRectangleLines` `DrawLine` `DrawText` `MeasureText` `IsKeyPressed` `GetKeyPressed` `TextFormat` `SetRandomSeed` `GetRandomValue`, the rlgl texture calls `rlLoadTexture` `rlUpdateTexture` `rlUnloadTexture` `rlSetTexture` `rlBegin` `rlEnd` `rlColor4ub` `rlTexCoord2f` `rlVertex2f`, and the `KEY_*` keys.
+
+No raylib call takes a struct by value: a `Color` goes as its `packed()` `u32`, and textures go by their rlgl id.
 
 </details>
 
 <details>
-<summary><b>opengl</b>: classic OpenGL 1.x</summary>
+<summary><b>opengl</b>: classic OpenGL 1.x, in <code>mod OpenGL</code></summary>
 
 | Area | Functions |
 |---|---|
